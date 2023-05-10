@@ -1,19 +1,20 @@
 import os
 
 from utils import JSONFile, Log
+from cricket.core.Team import Team
 
 log = Log('ODI')
 
 
 class ODI:
-    def __init__(self, date: str, country1: str, country2: str, winner: str):
+    def __init__(self, date: str, team1: str, team2: str, winner: str):
         self.date = date
-        self.country1 = country1
-        self.country2 = country2
+        self.team1 = team1
+        self.team2 = team2
         self.winner = winner
 
-    def did_country_play(self, country: str) -> bool:
-        return country in (self.country1, self.country2)
+    def did_team_play(self, team: str) -> bool:
+        return team in (self.team1, self.team2)
 
     @staticmethod
     def load(path: str):
@@ -21,10 +22,12 @@ class ODI:
         info = data["info"]
         date = info["dates"][0]
         teams = info["teams"]
-        country1, country2 = teams
+        team1, team2 = teams
+        if team1 > team2:
+            team1, team2 = team2, team1
         outcome = info["outcome"]
         winner = outcome.get("winner") or "no winner"
-        return ODI(date, country1, country2, winner)
+        return ODI(date, team1, team2, winner)
 
     @staticmethod
     def loadAll() -> list:
@@ -37,15 +40,15 @@ class ODI:
 
     def __str__(self):
         icon1 = icon2 = ''
-        if self.country1 == self.winner:
+        if self.team1 == self.winner:
             icon1 = '✅'
-        elif self.country2 == self.winner:
+        elif self.team2 == self.winner:
             icon2 = '✅'
-        return f"{self.date} {icon1}{self.country1} vs {icon2}{self.country2}"
+        return f"{self.date} {icon1}{self.team1} vs {icon2}{self.team2}"
 
 
 if __name__ == '__main__':
     odi_list = ODI.loadAll()
     for odi in odi_list:
-        if odi.did_country_play('Sri Lanka'):
+        if odi.did_team_play('Sri Lanka'):
             print(odi)
