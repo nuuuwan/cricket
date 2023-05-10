@@ -1,43 +1,39 @@
+from functools import cache
+
 from cricket.core.ODI import ODI
 
 
+@cache
 def head_to_head_odis():
     odis = ODI.loadAll()
     idx = {}
     for odi in odis:
-        country1 = odi.country1
-        country2 = odi.country2
-        if country1 not in idx:
-            idx[country1] = {}
-        if country2 not in idx[country1]:
-            idx[country1][country2] = []
-        if country2 not in idx:
-            idx[country2] = {}
-        if country1 not in idx[country2]:
-            idx[country2][country1] = []
+        team1 = odi.team1
+        team2 = odi.team2
+        if team1 not in idx:
+            idx[team1] = {}
+        if team2 not in idx[team1]:
+            idx[team1][team2] = []
+        if team2 not in idx:
+            idx[team2] = {}
+        if team1 not in idx[team2]:
+            idx[team2][team1] = []
 
-        idx[country1][country2].append(odi)
-        idx[country2][country1].append(odi)
+        idx[team1][team2].append(odi)
+        idx[team2][team1].append(odi)
     return idx
 
 
+@cache
 def head_to_head_odds():
     idx = head_to_head_odis()
     idx2 = {}
-    for country1 in idx:
-        idx2[country1] = {}
-        for country2 in idx[country1]:
-            odis = idx[country1][country2][0:10]
-            n1 = len([odi for odi in odis if odi.winner == country1])
-            n2 = len([odi for odi in odis if odi.winner == country2])
+    for team1 in idx:
+        idx2[team1] = {}
+        for team2 in idx[team1]:
+            odis = idx[team1][team2][0:20]
+            n1 = len([odi for odi in odis if odi.winner == team1])
+            n2 = len([odi for odi in odis if odi.winner == team2])
             p1 = n1 / (n1 + n2)
-            idx2[country1][country2] = p1
+            idx2[team1][team2] = p1
     return idx2
-
-
-if __name__ == '__main__':
-    idx = head_to_head_odds()
-    for country1 in idx:
-        for country2 in idx[country1]:
-            if 'Sri Lanka' == country1:
-                print(f"{country1} vs {country2}: {idx[country1][country2]}")

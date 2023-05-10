@@ -1,7 +1,6 @@
 import os
 
 from utils import JSONFile, Log
-from cricket.core.Team import Team
 
 log = Log('ODI')
 
@@ -50,5 +49,5 @@ class ODI:
 if __name__ == '__main__':
     odi_list = ODI.loadAll()
     for odi in odi_list:
-        if odi.did_team_play('Sri Lanka'):
+        if odi.did_team_play('South Africa'):
             print(odi)
