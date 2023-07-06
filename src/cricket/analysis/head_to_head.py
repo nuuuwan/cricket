@@ -1,7 +1,9 @@
 from functools import cache
 
 from cricket.core.ODI import ODI
+
 N_HEAD_TO_HEAD_MATCHES = 10
+
 
 @cache
 def head_to_head_odis():
