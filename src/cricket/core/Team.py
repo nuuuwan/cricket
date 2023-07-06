@@ -1,3 +1,4 @@
+from cricket.core.COUNTRY_TO_EMOJI import COUNTRY_TO_EMOJI
 class Team:
     def __init__(self, name: str):
         self.name = name
@@ -20,3 +21,7 @@ class Team:
     @property
     def hashtag(self) -> str:
         return "#" + self.name.replace(' ', '')
+    
+    @property
+    def emoji(self) -> str:
+        return COUNTRY_TO_EMOJI.get(self.name, '')
