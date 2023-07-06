@@ -1,7 +1,7 @@
 from functools import cache
 
 from cricket.core.ODI import ODI
-
+N_HEAD_TO_HEAD_MATCHES = 10
 
 @cache
 def head_to_head_odis():
@@ -31,7 +31,7 @@ def head_to_head_odds():
     for team1 in idx:
         idx2[team1] = {}
         for team2 in idx[team1]:
-            odis = idx[team1][team2][0:20]
+            odis = idx[team1][team2][:N_HEAD_TO_HEAD_MATCHES]
             n1 = len([odi for odi in odis if odi.winner == team1])
             n2 = len([odi for odi in odis if odi.winner == team2])
             p1 = n1 / (n1 + n2)
