@@ -12,16 +12,16 @@ class CWC2023:
     @property
     def teams(self) -> list[str]:
         return [
-            'India',
-            'Australia',
-            'England',
-            'New Zealand',
-            'South Africa',
-            'Pakistan',
-            'Bangladesh',
-            'West Indies',
-            'Sri Lanka',
             'Afghanistan',
+            'Australia',
+            'Bangladesh',
+            'England',
+            'India',
+            'Netherlands',
+            'New Zealand',
+            'Pakistan',
+            'South Africa',
+            'Sri Lanka',
         ]
 
     def simulate_match(self, team1: str, team2: str) -> str:
@@ -82,4 +82,4 @@ if __name__ == '__main__':
         team_to_wins.items(), key=lambda item: item[1], reverse=True
     ):
         p_wins = n_wins / N_G
-        print(f"{p_wins:.1%}\t{Team(team).hashtag}")
+        print(f"{p_wins:.1%}\t{Team(team).emoji} {Team(team).hashtag}")
