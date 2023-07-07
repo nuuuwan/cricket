@@ -17,7 +17,7 @@ class Team:
         return TEAM_IDX[team_name]
 
     def __str__(self):
-        return f"{self.emoji} {self.name}"
+        return f"{self.emoji} {self.hashtag}"
 
 
 TEAMS = [

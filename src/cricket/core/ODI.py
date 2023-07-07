@@ -3,6 +3,7 @@ import os
 from utils import SECONDS_IN, JSONFile, Log, Time, TimeFormat
 
 from cricket.core.CITY_TO_COUNTRY import CITY_TO_COUNTRY
+from cricket.core.CWC_TEAM_LIST import CWC_TEAM_LIST
 from cricket.core.utils import extract_city
 
 log = Log('ODI')
@@ -47,6 +48,18 @@ class ODI:
     def country(self) -> str:
         return CITY_TO_COUNTRY.get(self.city)
 
+    @property
+    def loser(self) -> str:
+        if self.winner == self.team1:
+            return self.team2
+        if self.winner == self.team2:
+            return self.team1
+        return None
+
+    @property
+    def is_neutral(self) -> bool:
+        return not self.did_team_play(self.country)
+
     @staticmethod
     def load(path: str):
         data = JSONFile(path).read()
@@ -77,6 +90,10 @@ class ODI:
         for filename in os.listdir(os.path.join("data", "odis")):
             odi = ODI.load(os.path.join("data", "odis", filename))
             if odi is None:
+                continue
+            if not (
+                odi.team1 in CWC_TEAM_LIST and odi.team2 in CWC_TEAM_LIST
+            ):
                 continue
 
             odis.append(odi)
