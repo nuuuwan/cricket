@@ -1,4 +1,4 @@
-CWC_TEAM_LIST = [
+CWC2023_TEAM_LIST = [
     'Afghanistan',
     'Australia',
     'Bangladesh',

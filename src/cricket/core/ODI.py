@@ -1,9 +1,10 @@
 import os
+from functools import cache
 
 from utils import SECONDS_IN, JSONFile, Log, Time, TimeFormat
 
 from cricket.core.CITY_TO_COUNTRY import CITY_TO_COUNTRY
-from cricket.core.CWC_TEAM_LIST import CWC_TEAM_LIST
+from cricket.core.CWC2023_TEAM_LIST import CWC2023_TEAM_LIST
 from cricket.core.utils import extract_city
 
 log = Log('ODI')
@@ -31,6 +32,9 @@ class ODI:
 
     def did_team_play(self, team: str) -> bool:
         return team in (self.team1, self.team2)
+
+    def did_teams_play(self, team1: str, team2: str) -> bool:
+        return self.did_team_play(team1) and self.did_team_play(team2)
 
     @property
     def data_ut(self):
@@ -84,6 +88,7 @@ class ODI:
         winner = outcome.get("winner") or "no winner"
         return ODI(gender, date, city, team1, team2, winner)
 
+    @cache
     @staticmethod
     def load_list() -> list:
         odis = []
@@ -92,14 +97,15 @@ class ODI:
             if odi is None:
                 continue
             if not (
-                odi.team1 in CWC_TEAM_LIST and odi.team2 in CWC_TEAM_LIST
+                odi.team1 in CWC2023_TEAM_LIST
+                and odi.team2 in CWC2023_TEAM_LIST
             ):
                 continue
 
             odis.append(odi)
 
         odis = sorted(odis, key=lambda odi: odi.date, reverse=True)
-        log.info(f"Loaded {len(odis)} {TEAM_TYPE}-{GENDER}-{MATCH_TYPE}")
+        log.debug(f"Loaded {len(odis)} {TEAM_TYPE}-{GENDER}-{MATCH_TYPE}")
         return odis
 
     @staticmethod
@@ -107,22 +113,6 @@ class ODI:
         odis = ODI.load_list()
         odis = [odi for odi in odis if odi.did_team_play(team_name)]
         return odis
-
-    @staticmethod
-    def load_idx2_by_teams(gender=None):
-        odis = ODI.load_list(gender)
-        idx = {}
-
-        def update(team_a, team_b, odi):
-            idx[team_a] = idx.get(team_a, {})
-            idx[team_a][team_b] = idx[team_a].get(team_b, [])
-            idx[team_a][team_b].append(odi)
-
-        for odi in odis:
-            update(odi.team1, odi.team2, odi)
-            update(odi.team2, odi.team1, odi)
-
-        return idx
 
     @staticmethod
     def build_hypothetical(team1: str, team2: str, winner: str):
@@ -134,7 +124,7 @@ class ODI:
             icon1 = '✅'
         elif self.team2 == self.winner:
             icon2 = '✅'
-        return f"{self.date} {icon1}{self.team1} vs {icon2}{self.team2}"
+        return f"{self.date} ({self.time_weight:.2f}) {icon1}{self.team1} vs {icon2}{self.team2} [{self.city}, {self.country}]"
 
     @property
     def year(self):

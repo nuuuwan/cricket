@@ -19,6 +19,9 @@ class Team:
     def __str__(self):
         return f"{self.emoji} {self.hashtag}"
 
+    def __eq__(self, other):
+        return isinstance(other, Team) and self.name == other.name
+
 
 TEAMS = [
     Team('AFG', 'Afghanistan', '🇦🇫'),
