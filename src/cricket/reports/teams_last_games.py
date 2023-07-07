@@ -1,4 +1,4 @@
-from cricket.core.ODI import ODI
+from cricket.core import ODI
 
 
 def teams_last_games(team_name):

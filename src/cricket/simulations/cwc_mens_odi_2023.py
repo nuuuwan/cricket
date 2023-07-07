@@ -1,8 +1,8 @@
 import random
 
 from cricket.analysis.head_to_head import head_to_head_odds
-from cricket.core.ODI import ODI
-from cricket.core.Team import Team
+from cricket.core import ODI
+from cricket.core import Team
 
 GENDER = 'male'
 
