@@ -81,20 +81,16 @@ class ODI:
     def load_idx2_by_teams(gender=None):
         odis = ODI.load_list(gender)
         idx = {}
-        for odi in odis:
-            team1 = odi.team1
-            team2 = odi.team2
-            if team1 not in idx:
-                idx[team1] = {}
-            if team2 not in idx[team1]:
-                idx[team1][team2] = []
-            if team2 not in idx:
-                idx[team2] = {}
-            if team1 not in idx[team2]:
-                idx[team2][team1] = []
 
-            idx[team1][team2].append(odi)
-            idx[team2][team1].append(odi)
+        def update(team_a, team_b, odi):
+            idx[team_a] = idx.get(team_a, {})
+            idx[team_a][team_b] = idx[team_a].get(team_b, [])
+            idx[team_a][team_b].append(odi)
+
+        for odi in odis:
+            update(odi.team1, odi.team2, odi)
+            update(odi.team2, odi.team1, odi)
+
         return idx
 
     @staticmethod
