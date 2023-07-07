@@ -25,7 +25,7 @@ class CWC2023:
         ]
 
     def simulate_match(self, team1: str, team2: str) -> str:
-        p1 = self.odds[team1][team2]
+        p1 = self.odds.get(team1, {}).get(team2, 0.5)
         return team1 if random.random() < p1 else team2
 
     def simulate_league_state(self):
@@ -37,7 +37,7 @@ class CWC2023:
                 team1 = teams[i1]
                 team2 = teams[i2]
                 winner = self.simulate_match(team1, team2)
-                odi = ODI(None, team1, team2, winner)
+                odi = ODI(None, None, team1, team2, winner)
                 odi_list.append(odi)
         return odi_list
 
@@ -82,4 +82,6 @@ if __name__ == '__main__':
         team_to_wins.items(), key=lambda item: item[1], reverse=True
     ):
         p_wins = n_wins / N_G
-        print(f"{p_wins:.1%}\t{Team(team).emoji} {Team(team).hashtag}")
+        print(
+            f"{p_wins:.1%}\t{Team.load(team).emoji} {Team.load(team).hashtag}"
+        )

@@ -1,18 +1,32 @@
-from cricket.core.constants import COUNTRY_TO_ALPHA3, COUNTRY_TO_EMOJI
-
-
 class Team:
-    def __init__(self, name: str):
+    def __init__(self, alpha3: str, name: str, emoji: str):
+        self.alpha3 = alpha3
         self.name = name
-
-    @property
-    def alpha3(self) -> str:
-        return COUNTRY_TO_ALPHA3.get(self.name, '')
+        self.emoji = emoji
 
     @property
     def hashtag(self) -> str:
         return "#" + self.name.replace(' ', '')
 
-    @property
-    def emoji(self) -> str:
-        return COUNTRY_TO_EMOJI.get(self.name, '')
+    @staticmethod
+    def load_list():
+        return TEAMS
+
+    @staticmethod
+    def load(team_name):
+        return TEAM_IDX[team_name]
+
+
+TEAMS = [
+    Team('AFG', 'Afghanistan', '🇦🇫'),
+    Team('AUS', 'Australia', '🇦🇺'),
+    Team('BAN', 'Bangladesh', '🇧🇩'),
+    Team('ENG', 'England', '🏴󠁧󠁢󠁥󠁮󠁧󠁿'),
+    Team('IND', 'India', '🇮🇳'),
+    Team('NLD', 'Netherlands', '🇳🇱'),
+    Team('NZL', 'New Zealand', '🇳🇿'),
+    Team('PAK', 'Pakistan', '🇵🇰'),
+    Team('RSA', 'South Africa', '🇿🇦'),
+    Team('SRI', 'Sri Lanka', '🇱🇰'),
+]
+TEAM_IDX = {team.name: team for team in TEAMS}
