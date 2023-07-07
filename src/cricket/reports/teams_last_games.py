@@ -1,7 +1,7 @@
 from cricket.core import ODI
 
 
-def teams_last_games(team_name):
+def main(team_name):
     from cricket.core.Team import TEAM_IDX, Team
 
     odis = ODI.load_list_for_team(team_name)
@@ -24,4 +24,4 @@ def teams_last_games(team_name):
 
 if __name__ == "__main__":
     TEAM = 'Sri Lanka'
-    teams_last_games(TEAM)
+    main(TEAM)
