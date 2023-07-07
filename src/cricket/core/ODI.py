@@ -9,8 +9,15 @@ log = Log('ODI')
 
 class ODI:
     def __init__(
-        self, date: str, venue: str, team1: str, team2: str, winner: str
+        self,
+        gender: str,
+        date: str,
+        venue: str,
+        team1: str,
+        team2: str,
+        winner: str,
     ):
+        self.gender = gender
         self.date = date
         self.venue = venue
         self.team1 = team1
@@ -41,8 +48,6 @@ class ODI:
         data = JSONFile(path).read()
         info = data["info"]
         gender = info['gender']
-        if gender != 'male':
-            return None
         date = info["dates"][0]
         venue = info.get("city") or info["venue"]
         teams = info["teams"]
@@ -51,26 +56,50 @@ class ODI:
             team1, team2 = team2, team1
         outcome = info["outcome"]
         winner = outcome.get("winner") or "no winner"
-        return ODI(date, venue, team1, team2, winner)
+        return ODI(gender, date, venue, team1, team2, winner)
 
     @staticmethod
-    def loadAll() -> list:
+    def load_list(gender=None) -> list:
         odis = []
         for filename in os.listdir(os.path.join("data", "odis")):
             odi = ODI.load(os.path.join("data", "odis", filename))
-            if not odi:
+            if gender and odi.gender != gender:
                 continue
             odis.append(odi)
 
         odis = sorted(odis, key=lambda odi: odi.date, reverse=True)
-        log.info(f"Loaded {len(odis)} ODIs")
+        log.info(f"Loaded {len(odis)} ODIs ({gender=})")
         return odis
 
     @staticmethod
-    def load_with_team(team: str) -> list:
-        odis = ODI.loadAll()
-        odis = [odi for odi in odis if odi.did_team_play(team)]
+    def load_list_for_team(team_name: str) -> list:
+        odis = ODI.load_list()
+        odis = [odi for odi in odis if odi.did_team_play(team_name)]
         return odis
+
+    @staticmethod
+    def load_idx2_by_teams(gender=None):
+        odis = ODI.load_list(gender)
+        idx = {}
+        for odi in odis:
+            team1 = odi.team1
+            team2 = odi.team2
+            if team1 not in idx:
+                idx[team1] = {}
+            if team2 not in idx[team1]:
+                idx[team1][team2] = []
+            if team2 not in idx:
+                idx[team2] = {}
+            if team1 not in idx[team2]:
+                idx[team2][team1] = []
+
+            idx[team1][team2].append(odi)
+            idx[team2][team1].append(odi)
+        return idx
+
+    @staticmethod
+    def build_hypothetical(team1: str, team2: str, winner: str):
+        return ODI(None, None, None, team1, team2, winner)
 
     def __str__(self):
         icon1 = icon2 = ''
@@ -83,29 +112,3 @@ class ODI:
     @property
     def year(self):
         return self.date[:4]
-
-
-def teams_last_games(team_name):
-    from cricket.core.Team import TEAM_IDX, Team
-
-    odis = ODI.load_with_team(team_name)
-    prev_year = None
-    for odi in odis:
-        other_team = odi.team1 if odi.team2 == team_name else odi.team2
-        if other_team not in TEAM_IDX:
-            continue
-
-        year = odi.year
-        if prev_year != year:
-            print('')
-        prev_year = year
-
-        icon = '✅' if odi.winner == team_name else '❌'
-        print(
-            f"{odi.date} ({odi.time_weight:.2f}) {icon} {Team.load(other_team)}"
-        )
-
-
-if __name__ == "__main__":
-    TEAM = 'Sri Lanka'
-    teams_last_games(TEAM)
