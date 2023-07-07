@@ -4,10 +4,12 @@ from cricket.analysis.head_to_head import head_to_head_odds
 from cricket.core.ODI import ODI
 from cricket.core.Team import Team
 
+GENDER = 'male'
+
 
 class CWC2023:
     def __init__(self):
-        self.odds = head_to_head_odds()
+        self.odds = head_to_head_odds(GENDER)
 
     @property
     def teams(self) -> list[str]:
@@ -37,7 +39,7 @@ class CWC2023:
                 team1 = teams[i1]
                 team2 = teams[i2]
                 winner = self.simulate_match(team1, team2)
-                odi = ODI(None, None, team1, team2, winner)
+                odi = ODI.build_hypothetical(team1, team2, winner)
                 odi_list.append(odi)
         return odi_list
 
