@@ -2,6 +2,7 @@ import os
 
 from utils import SECONDS_IN, JSONFile, Log, Time, TimeFormat
 
+from cricket.core.CITY_TO_COUNTRY import CITY_TO_COUNTRY
 from cricket.core.utils import extract_city
 
 log = Log('ODI')
@@ -41,6 +42,10 @@ class ODI:
     @property
     def time_weight(self):
         return 1 / (2**self.years_ago)
+
+    @property
+    def country(self) -> str:
+        return CITY_TO_COUNTRY.get(self.city)
 
     @staticmethod
     def load(path: str):
