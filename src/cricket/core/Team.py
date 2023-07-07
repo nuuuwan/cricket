@@ -16,6 +16,9 @@ class Team:
     def load(team_name):
         return TEAM_IDX[team_name]
 
+    def __str__(self):
+        return f"{self.emoji} {self.name}"
+
 
 TEAMS = [
     Team('AFG', 'Afghanistan', '🇦🇫'),
