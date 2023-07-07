@@ -2,9 +2,12 @@ import os
 
 from utils import SECONDS_IN, JSONFile, Log, Time, TimeFormat
 
-from cricket.core.constants import CITIES_IN_INDIA
+from cricket.core.utils import extract_city
 
 log = Log('ODI')
+TEAM_TYPE = 'international'
+MATCH_TYPE = 'ODI'
+GENDER = 'male'
 
 
 class ODI:
@@ -12,24 +15,20 @@ class ODI:
         self,
         gender: str,
         date: str,
-        venue: str,
+        city: str,
         team1: str,
         team2: str,
         winner: str,
     ):
         self.gender = gender
         self.date = date
-        self.venue = venue
+        self.city = city
         self.team1 = team1
         self.team2 = team2
         self.winner = winner
 
     def did_team_play(self, team: str) -> bool:
         return team in (self.team1, self.team2)
-
-    @property
-    def is_in_india(self) -> bool:
-        return self.venue in CITIES_IN_INDIA
 
     @property
     def data_ut(self):
@@ -47,28 +46,38 @@ class ODI:
     def load(path: str):
         data = JSONFile(path).read()
         info = data["info"]
+        team_type = info['team_type']
+        if team_type != TEAM_TYPE:
+            return None
+        match_type = info['match_type']
+        if match_type != MATCH_TYPE:
+            return None
         gender = info['gender']
+        if gender != GENDER:
+            return None
+
         date = info["dates"][0]
-        venue = info.get("city") or info["venue"]
+        city = extract_city(info)
         teams = info["teams"]
         team1, team2 = teams
         if team1 > team2:
             team1, team2 = team2, team1
         outcome = info["outcome"]
         winner = outcome.get("winner") or "no winner"
-        return ODI(gender, date, venue, team1, team2, winner)
+        return ODI(gender, date, city, team1, team2, winner)
 
     @staticmethod
-    def load_list(gender=None) -> list:
+    def load_list() -> list:
         odis = []
         for filename in os.listdir(os.path.join("data", "odis")):
             odi = ODI.load(os.path.join("data", "odis", filename))
-            if gender and odi.gender != gender:
+            if odi is None:
                 continue
+
             odis.append(odi)
 
         odis = sorted(odis, key=lambda odi: odi.date, reverse=True)
-        log.info(f"Loaded {len(odis)} ODIs ({gender=})")
+        log.info(f"Loaded {len(odis)} {TEAM_TYPE}-{GENDER}-{MATCH_TYPE}")
         return odis
 
     @staticmethod
