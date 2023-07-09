@@ -58,6 +58,8 @@ class HeadToHead:
 
     @cached_property
     def wp1(self):
+        if self.wn1 + self.wn2 == 0:
+            return 0.5
         return self.wn1 / (self.wn1 + self.wn2)
 
     @cached_property
