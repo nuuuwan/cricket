@@ -37,12 +37,20 @@ class ODI:
         return self.did_team_play(team1) and self.did_team_play(team2)
 
     @property
-    def data_ut(self):
+    def date_ut(self):
         return TimeFormat('%Y-%m-%d').parse(self.date).ut
 
     @property
+    def date_short(self) -> str:
+        return TimeFormat('%b %d').stringify(Time(self.date_ut))
+
+    @property
+    def date_week(self) -> int:
+        return int((self.date_ut + SECONDS_IN.DAY * 4) / SECONDS_IN.WEEK)
+
+    @property
     def years_ago(self):
-        return (Time.now().ut - self.data_ut) / SECONDS_IN.AVG_YEAR
+        return (Time.now().ut - self.date_ut) / SECONDS_IN.AVG_YEAR
 
     @property
     def time_weight(self):
