@@ -55,6 +55,9 @@ class HeadToHead:
     @cached_property
     def wn2(self):
         return sum([odi.time_weight for odi in self.team2_win_odis])
+    @cached_property
+    def wn(self):
+        return self.wn1 + self.wn2
 
     @cached_property
     def wp1(self):
