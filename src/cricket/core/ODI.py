@@ -35,7 +35,7 @@ class ODI:
 
     def did_teams_play(self, team1: str, team2: str) -> bool:
         return self.did_team_play(team1) and self.did_team_play(team2)
-    
+
     def did_any_teams_play(self, teams: list[str]) -> bool:
         for team in teams:
             if self.did_team_play(team):

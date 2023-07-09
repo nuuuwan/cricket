@@ -28,29 +28,29 @@ SOUTH_ASIA_COUNTRY_LIST = [
 def main():
     def get_p1(team1, team2):
         num, den = 0, 0
-        head_to_head_subcontinent = HeadToHead(
-            team1, team2, SOUTH_ASIA_COUNTRY_LIST
+        h2h_south_asia = HeadToHead(
+            lambda odi: (
+                odi.winner == team1
+                and odi.loser == team2
+                and odi.country in SOUTH_ASIA_COUNTRY_LIST
+            ),
+            lambda odi: (
+                odi.winner == team2
+                and odi.loser == team1
+                and odi.country in SOUTH_ASIA_COUNTRY_LIST
+            ),
         )
-        if head_to_head_subcontinent.n > 0:
-            num += (
-                head_to_head_subcontinent.wp1 * head_to_head_subcontinent.wn
-            )
-            den += head_to_head_subcontinent.wn
+        if h2h_south_asia.n > 0:
+            num += h2h_south_asia.wp1 * h2h_south_asia.wn
+            den += h2h_south_asia.wn
 
-        head_to_head_world = HeadToHead(team1, team2, [])
+        head_to_head_world = HeadToHead(
+            lambda odi: (odi.winner == team1 and odi.loser == team2),
+            lambda odi: (odi.winner == team2 and odi.loser == team1),
+        )
         if head_to_head_world.n > 0:
             num += head_to_head_world.wp1 * head_to_head_world.wn
             den += head_to_head_world.wn
-
-        head_to_head_team1 = HeadToHead(team1, None, [])
-        if head_to_head_team1.n > 0:
-            num += head_to_head_team1.wp1 * head_to_head_team1.wn
-            den += head_to_head_team1.wn
-
-        head_to_head_team2 = HeadToHead(team2, None, [])
-        if head_to_head_team2.n > 0:
-            num += head_to_head_team2.wp1 * head_to_head_team2.wn
-            den += head_to_head_team2.wn
 
         if den == 0:
             log.error(f'No data for {team1} vs {team2}')

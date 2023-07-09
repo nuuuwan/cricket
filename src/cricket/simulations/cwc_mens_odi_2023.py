@@ -22,17 +22,44 @@ class CWC2023:
 
     @cache
     def get_p(self, team1: str, team2: str):
-        h2h_india = HeadToHead(team1, team2, ['India'])
+        h2h_india = HeadToHead(
+            lambda odi: (
+                odi.winner == team1
+                and odi.loser == team2
+                and odi.country == 'India'
+            ),
+            lambda odi: (
+                odi.winner == team2
+                and odi.loser == team1
+                and odi.country == 'India'
+            ),
+        )
+
         if h2h_india.n >= MIN_ODIS:
             p1 = h2h_india.wp1
             print(team1, team2, p1, 'india')
         else:
-            h2h_south_asia = HeadToHead(team1, team2, SOUTH_ASIA_COUNTRY_LIST)
+            h2h_south_asia = HeadToHead(
+                lambda odi: (
+                    odi.winner == team1
+                    and odi.loser == team2
+                    and odi.country in SOUTH_ASIA_COUNTRY_LIST
+                ),
+                lambda odi: (
+                    odi.winner == team2
+                    and odi.loser == team1
+                    and odi.country in SOUTH_ASIA_COUNTRY_LIST
+                ),
+            )
             if h2h_south_asia.n >= MIN_ODIS:
                 p1 = h2h_south_asia.wp1
                 print(team1, team2, p1, 'south_asia')
             else:
-                h2h_all = HeadToHead(team1, team2, [])
+                h2h_all = HeadToHead(
+                    lambda odi: (odi.winner == team1 and odi.loser == team2),
+                    lambda odi: (odi.winner == team2 and odi.loser == team1),
+                )
+
                 p1 = h2h_all.wp1
                 print(team1, team2, p1, 'all')
         return p1
