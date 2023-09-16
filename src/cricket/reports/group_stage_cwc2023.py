@@ -7,16 +7,15 @@ from cricket.core import (CWC2023_ODI_LIST, EMOJI, SOUTH_ASIA_COUNTRY_LIST,
 
 log = Log('cwc2023_odds')
 
-P_HOT = 0.2
+P_HOT =1.0/3
 
 
 def p_to_emoji(p):
-    if p is None:
-        return EMOJI.DONT_KNOW
-    if p < P_HOT or p > (1 - P_HOT):
-        return EMOJI.COLD
-    return EMOJI.HOT
-
+    if p > 1 - P_HOT:
+        return EMOJI.WIN
+    if p < P_HOT:
+        return EMOJI.LOSE
+    return EMOJI.DRAW
 
 def prune_hashtags(lines):
     hashtag_set = set()
@@ -92,18 +91,18 @@ def get_p1(team1, team2):
 
 
 def main():
+    TEAM = Team.load('Sri Lanka')
     prev_week = None
     lines = [
-        "Predictions for the 2023 Men's ODI 🏏@CricketWorldCup",
-        "GROUP STAGE",
-        '⚠️ Work-in-progress. Still improving models.',
+        "2023 Men's #ODI @CricketWorldCup",
+        f"{TEAM} #GroupStage Odds",
         '',
     ]
     for odi in CWC2023_ODI_LIST:
         team1 = Team.load(odi.team1)
         team2 = Team.load(odi.team2)
 
-        if 'Sri Lanka' not in [team1.name, team2.name]:
+        if TEAM not in [team1, team2]:
             continue
         assert team1 is not team2
 
@@ -113,19 +112,16 @@ def main():
         prev_week = week
 
         p1 = get_p1(team1.name, team2.name)
-        if p1 is None:
-            lines.append(f'{odi.date_short} --- {team1} - {team2}')
-            continue
 
-        if p1 < 0.5:
+        if team2 == TEAM:
             team1, team2 = team2, team1
             p1 = 1 - p1
 
         lines.append(
-            f'{odi.date_short} {p_to_emoji(p1)} {p1:.0%} {team1} > {team2}'
+            f'{p_to_emoji(p1)} {p1:.0%} {team2}'
         )
 
-    lines += ['', '#CWC23']
+    lines += ['', '#CWC23', '⚠️ Work-in-progress']
     file_path = os.path.join('tweets', 'group_state_cwc2023.txt')
     lines = prune_hashtags(lines)
     File(file_path).write('\n'.join(lines))

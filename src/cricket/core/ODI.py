@@ -48,6 +48,10 @@ class ODI:
 
     @property
     def date_short(self) -> str:
+        return TimeFormat('%m/%d').stringify(Time(self.date_ut))
+
+    @property
+    def date_short2(self) -> str:
         return TimeFormat('%b %d').stringify(Time(self.date_ut))
 
     @property
