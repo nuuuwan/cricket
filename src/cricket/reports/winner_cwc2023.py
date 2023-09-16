@@ -5,7 +5,7 @@ from functools import cache
 from utils import File, Log, Time, TimeFormat
 
 from cricket.core import CWC2023_TEAM_LIST, ODI, Team
-from cricket.reports.group_state_cwc2023 import get_p1, prune_hashtags
+from cricket.reports.group_stage_cwc2023 import get_p1, prune_hashtags
 
 log = Log('cwc2023')
 
