@@ -107,6 +107,8 @@ class ODI:
     def load_list() -> list:
         odis = []
         for filename in os.listdir(os.path.join("data", "odis")):
+            if not filename.endswith(".json"):
+                continue
             odi = ODI.load(os.path.join("data", "odis", filename))
             if odi is None:
                 continue
