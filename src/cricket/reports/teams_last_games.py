@@ -23,5 +23,5 @@ def main(team_name):
 
 
 if __name__ == "__main__":
-    TEAM = 'Sri Lanka'
+    TEAM = 'England'
     main(TEAM)

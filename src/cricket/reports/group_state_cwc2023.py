@@ -38,7 +38,7 @@ def get_p1(team1, team2):
     num, den = 0, 0
 
     # SOUTH ASIA
-    W_SOUTH_ASIA = 0
+    W_SOUTH_ASIA = 0.25
     h2h_south_asia = HeadToHead(
         lambda odi: (
             odi.winner == team1
@@ -56,7 +56,7 @@ def get_p1(team1, team2):
         den += h2h_south_asia.wn * W_SOUTH_ASIA
 
     # WORLD
-    W_WORLD = 0.5
+    W_WORLD = 0.25
     head_to_head_world = HeadToHead(
         lambda odi: (odi.winner == team1 and odi.loser == team2),
         lambda odi: (odi.winner == team2 and odi.loser == team1),
@@ -66,7 +66,7 @@ def get_p1(team1, team2):
         den += head_to_head_world.wn * W_WORLD
 
     # ALL TEAMS
-    W_ALL_TEAMS = 0.25
+    W_ALL_TEAMS = 0.5
     head_to_head_world_all_team1 = HeadToHead(
         lambda odi: (odi.winner == team1 and odi.loser in CWC2023_ODI_LIST),
         lambda odi: (odi.winner in CWC2023_ODI_LIST and odi.loser == team1),
