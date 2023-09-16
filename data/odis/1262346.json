@@ -2,7 +2,7 @@
   "meta": {
     "data_version": "1.0.0",
     "created": "2021-05-26",
-    "revision": 1
+    "revision": 2
   },
   "info": {
     "balls_per_over": 6,
@@ -36,7 +36,8 @@
       "winner": "Bangladesh",
       "by": {
         "runs": 103
-      }
+      },
+      "method": "D/L"
     },
     "overs": 50,
     "player_of_match": [
