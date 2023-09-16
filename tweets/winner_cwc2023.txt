@@ -1,0 +1,17 @@
+Predictions for the 2023 Men's ODI 🏏@CricketWorldCup
+WINNER
+⚠️ Work-in-progress. Still improving models.
+
+26% 🇦🇺 #Australia
+22% 🇮🇳 #India
+18% 🇿🇦 #SouthAfrica
+15% 🏴󠁧󠁢󠁥󠁮󠁧󠁿 #England
+9% 🇵🇰 #Pakistan
+6% 🇳🇿 #NewZealand
+3% 🇧🇩 #Bangladesh
+1% 🇱🇰 #SriLanka
+0% 🇦🇫 #Afghanistan
+0% 🇳🇱 #Netherlands
+
+Updated 2023-07-09
+#CWC23

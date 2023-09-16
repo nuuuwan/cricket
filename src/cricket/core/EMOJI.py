@@ -2,5 +2,6 @@ class EMOJI:
     WIN = '🟢'
     LOSE = '🔴'
     DRAW = '🟡'
-    HOT = '🔥'
-    COLD = '❄️'
+    HOT = '🌶️'
+    COLD = '💤'
+    DONT_KNOW = '❓'
