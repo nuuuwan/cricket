@@ -7,7 +7,7 @@ from cricket.core import (CWC2023_ODI_LIST, EMOJI, SOUTH_ASIA_COUNTRY_LIST,
 
 log = Log('cwc2023_odds')
 
-P_HOT =1.0/3
+P_HOT = 1.0 / 3
 
 
 def p_to_emoji(p):
@@ -16,6 +16,7 @@ def p_to_emoji(p):
     if p < P_HOT:
         return EMOJI.LOSE
     return EMOJI.DRAW
+
 
 def prune_hashtags(lines):
     hashtag_set = set()
@@ -117,9 +118,7 @@ def main():
             team1, team2 = team2, team1
             p1 = 1 - p1
 
-        lines.append(
-            f'{p_to_emoji(p1)} {p1:.0%} {team2}'
-        )
+        lines.append(f'{p_to_emoji(p1)} {p1:.0%} {team2}')
 
     lines += ['', '#CWC23', '⚠️ Work-in-progress']
     file_path = os.path.join('tweets', 'group_state_cwc2023.txt')
