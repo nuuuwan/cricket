@@ -10,6 +10,8 @@ from cricket.core.Wickets import Wickets
 
 log = Log('DLSPredictor')
 
+TOTAL_OVERS = 50
+
 
 class DLSPredictor:
     @staticmethod
@@ -18,7 +20,7 @@ class DLSPredictor:
         RES_FILE_PATH = os.path.join('data', 'dls', 'resources_per_over.csv')
         lines = File(RES_FILE_PATH).read_lines()
         for i_line, line in enumerate(lines[1:]):
-            overs_rem = 50 - i_line
+            overs_rem = TOTAL_OVERS - i_line
             if overs_rem not in res_idx:
                 res_idx[overs_rem] = {}
 
@@ -46,11 +48,13 @@ class DLSPredictor:
         runs = score.runs * (
             res_rem_at_start / (res_rem_at_start - res_rem_now)
         )
-        return Score(runs, Wickets(10),total_overs)
-    
+        return Score(runs, Wickets(10), total_overs)
+
     @cache
     def get_res_rem(self, wickets_lost: Wickets, overs_rem: Overs):
         overs_min = int(overs_rem.overs_total)
+        if overs_min == TOTAL_OVERS:
+            return 1
         overs_max = overs_min + 1
         f_overs = (overs_rem.overs_total - overs_min) * 10 / 6
         r_min = self.res_idx[overs_min][wickets_lost.value]
@@ -61,7 +65,7 @@ class DLSPredictor:
 if __name__ == '__main__':
     predictor = DLSPredictor()
 
-    score = Score(Runs(130), Wickets(5), Overs(27, 4))
+    score = Score(Runs(8), Wickets(3), Overs(3))
     print(score)
 
-    print(predictor.project(score, Overs(45)))
+    print(predictor.project(score, Overs(TOTAL_OVERS)))
