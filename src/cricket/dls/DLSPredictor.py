@@ -4,6 +4,9 @@ from functools import cache
 from utils import File, Log
 
 from cricket.core.Overs import Overs
+from cricket.core.Runs import Runs
+from cricket.core.Score import Score
+from cricket.core.Wickets import Wickets
 
 log = Log('DLSPredictor')
 
@@ -30,30 +33,35 @@ class DLSPredictor:
         self.res_idx = DLSPredictor.get_res_idx()
 
     @cache
-    def predict(
+    def project(
         self,
-        runs: int,
-        wickets_lost: int,
-        overs_used: float,
-        total_overs: float,
-    ):
-        res_rem_at_start = self.get_res_rem(0, total_overs)
-        res_rem_now = self.get_res_rem(wickets_lost, total_overs - overs_used)
+        score: Score,
+        total_overs: Overs,
+    ) -> Score:
+        res_rem_at_start = self.get_res_rem(Wickets(0), total_overs)
+        res_rem_now = self.get_res_rem(
+            score.wickets, total_overs - score.overs
+        )
         log.debug(f'{res_rem_at_start=}, {res_rem_now=}')
-        return int(runs * res_rem_at_start / (res_rem_at_start - res_rem_now))
-
+        runs = score.runs * (
+            res_rem_at_start / (res_rem_at_start - res_rem_now)
+        )
+        return Score(runs, Wickets(10),total_overs)
+    
     @cache
-    def get_res_rem(self, wickets_lost: int, overs_rem: float):
-        overs_min = int(overs_rem)
+    def get_res_rem(self, wickets_lost: Wickets, overs_rem: Overs):
+        overs_min = int(overs_rem.overs_total)
         overs_max = overs_min + 1
-        f_overs = (overs_rem - overs_min) * 10 / 6
-        r_min = self.res_idx[overs_min][wickets_lost]
-        r_max = self.res_idx[overs_max][wickets_lost]
+        f_overs = (overs_rem.overs_total - overs_min) * 10 / 6
+        r_min = self.res_idx[overs_min][wickets_lost.value]
+        r_max = self.res_idx[overs_max][wickets_lost.value]
         return round(r_min + (r_max - r_min) * f_overs, 3)
 
 
 if __name__ == '__main__':
     predictor = DLSPredictor()
-    print(predictor.get_res_rem(5, Overs(17, 2).overs_total))
-    print(predictor.get_res_rem(5, Overs(14, 2).overs_total))
-    print(predictor.predict(130, 5, Overs(27, 4).overs_total, Overs(42).overs_total))
+
+    score = Score(Runs(130), Wickets(5), Overs(27, 4))
+    print(score)
+
+    print(predictor.project(score, Overs(45)))
